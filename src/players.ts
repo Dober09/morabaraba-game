@@ -68,7 +68,7 @@ function clickCorrectPosition(points:list[],mx:number,my:number):{}{
 function placeGamePeices(isPlayerOneTurn:boolean,{x,y}:any){
     if (isPlayerOneTurn){
         if (x && y){
-            new Player(x,y,"red")
+            new Player(x,y,"rgb(255,0,0,0.5)")
             playerOnePoints.push({x,y})
             isPlayerOneTurn =false
         }else{
@@ -76,7 +76,7 @@ function placeGamePeices(isPlayerOneTurn:boolean,{x,y}:any){
         }
     }else{
         if (x && y){
-            new Player(x,y,"blue")
+            new Player(x,y,"rgb(0,0,255,0.5)")
             playerTwoPoints.push({x,y})
             isPlayerOneTurn =true
         }else{
@@ -110,7 +110,7 @@ canvas.addEventListener("click",(ev):void=>{
       
         if (isPlayerOneTurn){
             if (x && y){
-                new Player(x,y,"red")
+                new Player(x,y,"rgb(255,0,0,0.5)")
                 playerOnePoints.push({x,y})
                
                 // decrease list
@@ -122,7 +122,7 @@ canvas.addEventListener("click",(ev):void=>{
             }
         }else{
             if (x && y){
-                new Player(x,y,"blue")
+                new Player(x,y,"rgb(0,0,255,0.5)")
                 playerTwoPoints.push({x,y})
                   
               
@@ -136,8 +136,30 @@ canvas.addEventListener("click",(ev):void=>{
     }else{
 
         if (isPlayerOneTurn){
-            
-          playOn(isPickedUp,playerOnePoints,mx,my,oldX,oldY)
+            // first select a peice to remove on the board
+            if (isPickedUp){
+                let {x,y}:any = clickCorrectPosition(playerOnePoints,mx,my)
+                isPickedUp = pickedUpPiece(x,y)
+                oldX = x
+                oldY = y
+            }else{
+                let {x,y}:any = clickCorrectPosition(points,mx,my)
+                // selecte the position  to move to
+                
+                points.push({x:x,y:y})
+                console.log(points)
+                if(x && y){
+                   if(movePeice(points,oldX,oldY,{x,y})){
+                        new Player(x,y,"rgb(255,0,0,0.5)")
+                    //    isPlayerOneTurn = false
+                }else{
+                    console.log("cannot create cricle")
+                   }
+                    // console.log(`do i move ${movePeice(points,oldX,oldY)}`)
+                }else{
+                    console.log("cannot move to that posistion")
+                }
+            }
 
         }
      
@@ -146,44 +168,25 @@ canvas.addEventListener("click",(ev):void=>{
 })
 
 
-function playOn(isPickedUp:boolean,playerPositions:list[],mx:number,my:number,oldX:number,oldY:number){
-    // first select a peice to remove on the board
-    if (isPickedUp){
-        let {x,y}:any = clickCorrectPosition(playerPositions,mx,my)
-        if (x && y){
-         
-            oldX =x
-            oldY = y
-            new Player(x,y,"red").cleartShape()
-          
-            isPickedUp =false
-            
-        }else{
-            console.log("cannot pick up peice that is not yours")
-        }
-    }else{
-        let {x,y}:any = clickCorrectPosition(points,mx,my)
-        // selecte the position  to move to
+function pickedUpPiece(x:any,y:any){
+    
+    if (x && y){
+     
+        oldX =x
+        oldY = y
+        new Player(x,y,"red").cleartShape()
+      
+        return false
         
-        points.push({x:x,y:y})
-        console.log(points)
-        if(x && y){
-           if(isOkToMove(points,oldX,oldY,{x,y})){
-                new Player(x,y,"red")
-            //    isPlayerOneTurn = false
-        }else{
-            console.log("cannot create cricle")
-           }
-            // console.log(`do i move ${movePeice(points,oldX,oldY)}`)
-        }else{
-            console.log("cannot move to that posistion")
-        }
+    }else{
+        console.log("cannot pick up peice that is not yours")
+        return true
     }
 }
 
 
 
-function isOkToMove(e:list[],mx:any,my:any,{x,y}:any):boolean{
+function movePeice(e:list[],mx:any,my:any,{x,y}:any):boolean{
 
     let isMove:boolean = false 
     console.log(`Moved to X-${x} and Y-${y}`)
@@ -200,9 +203,6 @@ function isOkToMove(e:list[],mx:any,my:any,{x,y}:any):boolean{
     }
 
     else if ((mx === 160 && my === 20) && e.some((item)=>(item.x === x && item.y === y)&&((x === 20 && y === 20) || (x === 160 && y === 160)  || (x === 300 && y === 20))) ){
-        isMove = true
-    }
-    else if ((mx === 160 && my === 160) && (e.some((item)=>(item.x === x && item.y === y)))){
         isMove = true
     }
     else if ((mx === 160 && my === 300) && e.some((item)=>(item.x === x && item.y === y)&&((x === 300 && y === 300) || (x === 160 && y === 160)  || (x === 20 && y === 300))) ){

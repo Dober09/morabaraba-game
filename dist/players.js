@@ -49,7 +49,7 @@ function clickCorrectPosition(points, mx, my) {
 function placeGamePeices(isPlayerOneTurn, { x, y }) {
     if (isPlayerOneTurn) {
         if (x && y) {
-            new Player(x, y, "red");
+            new Player(x, y, "rgb(255,0,0,0.5)");
             playerOnePoints.push({ x, y });
             isPlayerOneTurn = false;
         }
@@ -59,7 +59,7 @@ function placeGamePeices(isPlayerOneTurn, { x, y }) {
     }
     else {
         if (x && y) {
-            new Player(x, y, "blue");
+            new Player(x, y, "rgb(0,0,255,0.5)");
             playerTwoPoints.push({ x, y });
             isPlayerOneTurn = true;
         }
@@ -84,7 +84,7 @@ canvas.addEventListener("click", (ev) => {
         let { x, y } = clickCorrectPosition(points, mx, my);
         if (isPlayerOneTurn) {
             if (x && y) {
-                new Player(x, y, "red");
+                new Player(x, y, "rgb(255,0,0,0.5)");
                 playerOnePoints.push({ x, y });
                 // decrease list
                 isPlayerOneTurn = false;
@@ -96,7 +96,7 @@ canvas.addEventListener("click", (ev) => {
         }
         else {
             if (x && y) {
-                new Player(x, y, "blue");
+                new Player(x, y, "rgb(0,0,255,0.5)");
                 playerTwoPoints.push({ x, y });
                 isPlayerOneTurn = true;
                 turnsPlayed += 1;
@@ -108,45 +108,48 @@ canvas.addEventListener("click", (ev) => {
     }
     else {
         if (isPlayerOneTurn) {
-            playOn(isPickedUp, playerOnePoints, mx, my, oldX, oldY);
+            // first select a peice to remove on the board
+            if (isPickedUp) {
+                let { x, y } = clickCorrectPosition(playerOnePoints, mx, my);
+                isPickedUp = pickedUpPiece(x, y);
+                oldX = x;
+                oldY = y;
+            }
+            else {
+                let { x, y } = clickCorrectPosition(points, mx, my);
+                // selecte the position  to move to
+                points.push({ x: x, y: y });
+                console.log(points);
+                if (x && y) {
+                    if (movePeice(points, oldX, oldY, { x, y })) {
+                        new Player(x, y, "rgb(255,0,0,0.5)");
+                        //    isPlayerOneTurn = false
+                    }
+                    else {
+                        console.log("cannot create cricle");
+                    }
+                    // console.log(`do i move ${movePeice(points,oldX,oldY)}`)
+                }
+                else {
+                    console.log("cannot move to that posistion");
+                }
+            }
         }
     }
 });
-function playOn(isPickedUp, playerPositions, mx, my, oldX, oldY) {
-    // first select a peice to remove on the board
-    if (isPickedUp) {
-        let { x, y } = clickCorrectPosition(playerPositions, mx, my);
-        if (x && y) {
-            oldX = x;
-            oldY = y;
-            new Player(x, y, "red").cleartShape();
-            isPickedUp = false;
-        }
-        else {
-            console.log("cannot pick up peice that is not yours");
-        }
+function pickedUpPiece(x, y) {
+    if (x && y) {
+        oldX = x;
+        oldY = y;
+        new Player(x, y, "red").cleartShape();
+        return false;
     }
     else {
-        let { x, y } = clickCorrectPosition(points, mx, my);
-        // selecte the position  to move to
-        points.push({ x: x, y: y });
-        console.log(points);
-        if (x && y) {
-            if (isOkToMove(points, oldX, oldY, { x, y })) {
-                new Player(x, y, "red");
-                //    isPlayerOneTurn = false
-            }
-            else {
-                console.log("cannot create cricle");
-            }
-            // console.log(`do i move ${movePeice(points,oldX,oldY)}`)
-        }
-        else {
-            console.log("cannot move to that posistion");
-        }
+        console.log("cannot pick up peice that is not yours");
+        return true;
     }
 }
-function isOkToMove(e, mx, my, { x, y }) {
+function movePeice(e, mx, my, { x, y }) {
     let isMove = false;
     console.log(`Moved to X-${x} and Y-${y}`);
     console.log(`Picked up X-${mx} and Y-${my}`);
@@ -160,9 +163,6 @@ function isOkToMove(e, mx, my, { x, y }) {
         isMove = true;
     }
     else if ((mx === 160 && my === 20) && e.some((item) => (item.x === x && item.y === y) && ((x === 20 && y === 20) || (x === 160 && y === 160) || (x === 300 && y === 20)))) {
-        isMove = true;
-    }
-    else if ((mx === 160 && my === 160) && (e.some((item) => (item.x === x && item.y === y)))) {
         isMove = true;
     }
     else if ((mx === 160 && my === 300) && e.some((item) => (item.x === x && item.y === y) && ((x === 300 && y === 300) || (x === 160 && y === 160) || (x === 20 && y === 300)))) {
