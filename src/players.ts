@@ -87,26 +87,58 @@ function playersTurn(points:list[],{x,y}:any,{mx,my}:any,playerOne:boolean,playe
 }
 
 
+function playTurnTwo(playerPoints:list[],{mx,my}:any){
+    
+    if (detectPosostionClicked(playerPoints,mx,my,boundry)){
+                     
+        playerPoints.filter((point,idx)=>{
+            if((point.x+boundry > mx && point.x-boundry < mx) && (point.y+boundry > my && point.y-boundry < my)) {
+                
+                new Player(point.x,point.y,"").cleartShape()
+                oldValue =playerPoints.splice(idx,1)[0]
+                
+              
+            }
+        })
+        
+      
+        isPickedUp =false
+        
+    }else{
+        console.log("cannot pick up peice that is not yours")
+        
+    }
+}
 
 
-new Drawboard(canvas,grid)
+function playerTurnThree(points:list[],playerPoints:list[],{mx,my}:any,color:string){
+    points.filter((point,idx)=>{
+        if((point.x+boundry > mx && point.x-boundry < mx) && (point.y+boundry > my && point.y-boundry < my)) {
+          if(  isCorrectPositionToMoveTo(points,playerPoints,oldValue.x,oldValue.y,point)) {
+                 new Player(point.x,point.y,color) 
+                 points.splice(idx,1)
+                
+                isPlayerOneTurn = false
+          }
+            }
+
+            })
+}
+
 
 let isPlayerOneTurn:boolean = true
-let isPickedUp:boolean = true
 let turnsPlayed = 0
 let playerOnePoints :list[] = []
 let playerTwoPoints : list[] = []
-let emptySpot:list[]=[]
-let oldX:number
-let oldY:number
+let isPickedUp:boolean = true
+let oldValue:list
+
 const boundry = 20 
 canvas.addEventListener("click",(ev):void=>{
     let mx = ev.offsetX;
     let my = ev.offsetY;
     let x:any,y:any
 
-    console.log(points)
-    console.log(`Detect the correct position clicked ${detectPosostionClicked(points,mx,my,boundry)}`)
     if ( turnsPlayed < 6 ){
 
         if (isPlayerOneTurn){
@@ -116,72 +148,48 @@ canvas.addEventListener("click",(ev):void=>{
         
         }
     }else{
-
+        
         if (isPlayerOneTurn){
             // first select a peice to remove on the board
-          
+            console.log("Player One List")
+            console.log(playerOnePoints)
             if (isPickedUp){
-                // let {x,y}:any = clickCorrectPosition(playerOnePoints,mx,my)
-                isPickedUp = pickedUpPiece(points,x,y)
-                oldX = x
-                oldY = y
+
+                playTurnTwo(playerOnePoints,{mx,my})
+                           
             }else{
-                let oldPoints = points
-                // let {x,y}:any = clickCorrectPosition(points,mx,my)
-               console.log( isCorrectPositionToMoveTo(oldPoints,oldX,oldY,{x,y}))
-                console.log("player One")
-                console.log(playerOnePoints)
-                console.log("free space")
-                console.log(oldPoints)
-                // add the selected value to the list
-               
-                // relocate(points,x,y,oldX,oldY)
+                console.log(oldValue)
+                playerTurnThree(points,playerOnePoints,{mx,my},"rgb(255,0,0,0.5)")
+              
              
             }
 
+        }else{
+            // console.log(playerTwoPoints)
+            if (isPickedUp){
+                console.log("Player Two List")
+                console.log(playerOnePoints)
+                playTurnTwo(playerTwoPoints,{mx,my})
+                           
+            }else{
+                console.log(oldValue)
+                playerTurnThree(points,playerTwoPoints,{mx,my},"rgb(0,0,255,0.5)")
+              
+             
+            }
         }
+        console.log("Free space")
+        console.log(points)
      
     }
     
 })
 
 
-function relocate(emptyPositions:list[],x:number,y:number,oldX:number,oldY:number,color?:string){
-   
-    if(x && y){
-        if(isCorrectPositionToMoveTo(emptyPositions,oldX,oldY,{x,y})){
-           
-            new Player(x,y,"rgb(255,0,0,0.5)")
-        
-    }else{
-        console.log("cannot create cricle")
-       }
-
-    }else{
-        console.log("cannot move to that posistion")
-    }
-}
-
-
-function pickedUpPiece(emptyPositions:list[],x:number,y:number):boolean{
-    // check if you can pick your piece to be removed then added the position to the empty position
-    if (x && y){
-        oldX =x
-        oldY = y
-        new Player(x,y,"").cleartShape()
-        // emptyPositions.push({x:oldX,y:oldY})
-      
-        return false
-        
-    }else{
-        console.log("cannot pick up peice that is not yours")
-        return true
-    }
-}
 
 
 
-function isCorrectPositionToMoveTo(e:list[],mx:any,my:any,{x,y}:any):boolean{
+function isCorrectPositionToMoveTo(e:list[],playerPoints:list[],mx:any,my:any,{x,y}:any):boolean{
 
     let isMove:boolean = false 
     console.log(`Moved to X-${x} and Y-${y}`)
@@ -214,7 +222,11 @@ function isCorrectPositionToMoveTo(e:list[],mx:any,my:any,{x,y}:any):boolean{
     else if ((mx === 300 && my === 300) && e.some((item)=>(item.x === x && item.y === y)&&((x === 160 && y === 300) || (x === 160 && y === 160)  || (x === 300 && y === 160))) ){
         isMove = true
     }
-    
+
+    if(isMove){
+        e.push({x:mx,y:my})
+        playerPoints.push({x,y})
+    }
 
       return  isMove
 
@@ -222,3 +234,5 @@ function isCorrectPositionToMoveTo(e:list[],mx:any,my:any,{x,y}:any):boolean{
   
 }
 
+
+new Drawboard(canvas,grid)
