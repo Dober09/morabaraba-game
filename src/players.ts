@@ -47,41 +47,42 @@ const  points:list[]= [
 
 
 
-function clickCorrectPosition(points:list[],mx:number,my:number):{}{
-    //returns value if the selected point is within the boundry in the list given 
-    const boundry = 20 
-    let position:{} = {x:null,y:null}
+
+
+
+function detectPosostionClicked (points:list[],mx:number,my:number ,boundry:number){
+    
+    let isWithinTheBoundry = false
     points.map((point,idx)=>{
         if((point.x+boundry > mx && point.x-boundry < mx) && (point.y+boundry > my && point.y-boundry < my)) {
             // remove that value from the overralll list
-            points.splice(idx,1)
-
-           position = point
+            isWithinTheBoundry = true
         }
     })
-  
-    return position
+     return isWithinTheBoundry
 
 }
 
+function playersTurn(points:list[],{x,y}:any,{mx,my}:any,playerOne:boolean,playerList:list[],color:string):void{
+    if (detectPosostionClicked(points,mx,my,boundry)){
+        points.map((point,idx)=>{
+            if((point.x+boundry > mx && point.x-boundry < mx) && (point.y+boundry > my && point.y-boundry < my)) {
+                // remove that value from the overralll list
+                points.splice(idx,1)
+                x= point.x
+                y = point.y
 
-function placeGamePeices(isPlayerOneTurn:boolean,{x,y}:any){
-    if (isPlayerOneTurn){
-        if (x && y){
-            new Player(x,y,"rgb(255,0,0,0.5)")
-            playerOnePoints.push({x,y})
-            isPlayerOneTurn =false
-        }else{
-            console.log("Invalid Posion has to be closer to the point")
-        }
+            }
+        })
+        new Player(x,y,color)
+        playerList.push({x,y})
+       
+        // decrease list
+
+        isPlayerOneTurn =playerOne
+        turnsPlayed +=1
     }else{
-        if (x && y){
-            new Player(x,y,"rgb(0,0,255,0.5)")
-            playerTwoPoints.push({x,y})
-            isPlayerOneTurn =true
-        }else{
-            console.log("Invalid Posion has to be closer to the point")
-        }
+        console.log("Invalid Posion has to be closer to the point")
     }
 }
 
@@ -98,67 +99,44 @@ let playerTwoPoints : list[] = []
 let emptySpot:list[]=[]
 let oldX:number
 let oldY:number
+const boundry = 20 
 canvas.addEventListener("click",(ev):void=>{
     let mx = ev.offsetX;
     let my = ev.offsetY;
+    let x:any,y:any
 
-  
-   
+    console.log(points)
+    console.log(`Detect the correct position clicked ${detectPosostionClicked(points,mx,my,boundry)}`)
     if ( turnsPlayed < 6 ){
-        let {x,y}:any = clickCorrectPosition(points,mx,my)
-       
-      
+
         if (isPlayerOneTurn){
-            if (x && y){
-                new Player(x,y,"rgb(255,0,0,0.5)")
-                playerOnePoints.push({x,y})
-               
-                // decrease list
-
-                isPlayerOneTurn =false
-                turnsPlayed +=1
-            }else{
-                console.log("Invalid Posion has to be closer to the point")
-            }
+            playersTurn(points,{x,y},{mx,my},false,playerOnePoints,"rgb(255,0,0,0.5)")
         }else{
-            if (x && y){
-                new Player(x,y,"rgb(0,0,255,0.5)")
-                playerTwoPoints.push({x,y})
-                  
-              
-
-                isPlayerOneTurn =true
-                turnsPlayed +=1
-            }else{
-                console.log("Invalid Posion has to be closer to the point")
-            }
+            playersTurn(points,{x,y},{mx,my},true,playerTwoPoints,"rgb(0,0,255,0.5)")
+        
         }
     }else{
 
         if (isPlayerOneTurn){
             // first select a peice to remove on the board
+          
             if (isPickedUp){
-                let {x,y}:any = clickCorrectPosition(playerOnePoints,mx,my)
-                isPickedUp = pickedUpPiece(x,y)
+                // let {x,y}:any = clickCorrectPosition(playerOnePoints,mx,my)
+                isPickedUp = pickedUpPiece(points,x,y)
                 oldX = x
                 oldY = y
             }else{
-                let {x,y}:any = clickCorrectPosition(points,mx,my)
-                // selecte the position  to move to
-                
-                points.push({x:x,y:y})
-                console.log(points)
-                if(x && y){
-                   if(movePeice(points,oldX,oldY,{x,y})){
-                        new Player(x,y,"rgb(255,0,0,0.5)")
-                    //    isPlayerOneTurn = false
-                }else{
-                    console.log("cannot create cricle")
-                   }
-                    // console.log(`do i move ${movePeice(points,oldX,oldY)}`)
-                }else{
-                    console.log("cannot move to that posistion")
-                }
+                let oldPoints = points
+                // let {x,y}:any = clickCorrectPosition(points,mx,my)
+               console.log( isCorrectPositionToMoveTo(oldPoints,oldX,oldY,{x,y}))
+                console.log("player One")
+                console.log(playerOnePoints)
+                console.log("free space")
+                console.log(oldPoints)
+                // add the selected value to the list
+               
+                // relocate(points,x,y,oldX,oldY)
+             
             }
 
         }
@@ -168,13 +146,30 @@ canvas.addEventListener("click",(ev):void=>{
 })
 
 
-function pickedUpPiece(x:any,y:any){
-    
+function relocate(emptyPositions:list[],x:number,y:number,oldX:number,oldY:number,color?:string){
+   
+    if(x && y){
+        if(isCorrectPositionToMoveTo(emptyPositions,oldX,oldY,{x,y})){
+           
+            new Player(x,y,"rgb(255,0,0,0.5)")
+        
+    }else{
+        console.log("cannot create cricle")
+       }
+
+    }else{
+        console.log("cannot move to that posistion")
+    }
+}
+
+
+function pickedUpPiece(emptyPositions:list[],x:number,y:number):boolean{
+    // check if you can pick your piece to be removed then added the position to the empty position
     if (x && y){
-     
         oldX =x
         oldY = y
-        new Player(x,y,"red").cleartShape()
+        new Player(x,y,"").cleartShape()
+        // emptyPositions.push({x:oldX,y:oldY})
       
         return false
         
@@ -186,11 +181,12 @@ function pickedUpPiece(x:any,y:any){
 
 
 
-function movePeice(e:list[],mx:any,my:any,{x,y}:any):boolean{
+function isCorrectPositionToMoveTo(e:list[],mx:any,my:any,{x,y}:any):boolean{
 
     let isMove:boolean = false 
     console.log(`Moved to X-${x} and Y-${y}`)
     console.log(`Picked up X-${mx} and Y-${my}`)
+   
     
     if ((mx === 20 && my === 20) && e.some((item)=>(item.x === x && item.y === y)&&((x === 20 && y === 160) || (x === 160 && y === 160)  || (x === 160 && y === 20))) ){
         isMove = true
@@ -226,14 +222,3 @@ function movePeice(e:list[],mx:any,my:any,{x,y}:any):boolean{
   
 }
 
-// const  pointss:list[]= [
-//     {x:20,y:20},
-//     {x:20,y:160},
-//     {x:20,y:300},
-//     {x:160,y:20},
-//     {x:160,y:160},
-//     {x:160,y:300},
-//     {x:300,y:20},
-//     {x:300,y:160},
-//     {x:300,y:300},
-// ]
