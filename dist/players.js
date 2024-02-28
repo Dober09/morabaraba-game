@@ -69,6 +69,7 @@ function playTurnTwo(playerPoints, { mx, my }) {
             if ((point.x + boundry > mx && point.x - boundry < mx) && (point.y + boundry > my && point.y - boundry < my)) {
                 new Player(point.x, point.y, "").cleartShape();
                 oldValue = playerPoints.splice(idx, 1)[0];
+                new Drawboard(canvas, grid);
             }
         });
         isPickedUp = false;
@@ -77,16 +78,18 @@ function playTurnTwo(playerPoints, { mx, my }) {
         console.log("cannot pick up peice that is not yours");
     }
 }
-function playerTurnThree(points, playerPoints, { mx, my }, color) {
+function playerTurnThree(points, playerPoints, { mx, my }, isPlayerOneTurn, color) {
+    let isPlayerOne = isPlayerOneTurn;
     points.filter((point, idx) => {
         if ((point.x + boundry > mx && point.x - boundry < mx) && (point.y + boundry > my && point.y - boundry < my)) {
             if (isCorrectPositionToMoveTo(points, playerPoints, oldValue.x, oldValue.y, point)) {
                 new Player(point.x, point.y, color);
                 points.splice(idx, 1);
-                isPlayerOneTurn = false;
+                isPlayerOne = !isPlayerOneTurn;
             }
         }
     });
+    return isPlayerOne;
 }
 let isPlayerOneTurn = true;
 let turnsPlayed = 0;
@@ -117,7 +120,10 @@ canvas.addEventListener("click", (ev) => {
             }
             else {
                 console.log(oldValue);
-                playerTurnThree(points, playerOnePoints, { mx, my }, "rgb(255,0,0,0.5)");
+                isPlayerOneTurn = playerTurnThree(points, playerOnePoints, { mx, my }, true, "rgb(255,0,0,0.5)");
+                if (!isPlayerOneTurn) {
+                    isPickedUp = true;
+                }
             }
         }
         else {
@@ -129,7 +135,10 @@ canvas.addEventListener("click", (ev) => {
             }
             else {
                 console.log(oldValue);
-                playerTurnThree(points, playerTwoPoints, { mx, my }, "rgb(0,0,255,0.5)");
+                isPlayerOneTurn = playerTurnThree(points, playerTwoPoints, { mx, my }, false, "rgb(0,0,255,0.5)");
+                if (isPlayerOneTurn) {
+                    isPickedUp = true;
+                }
             }
         }
         console.log("Free space");
@@ -138,8 +147,8 @@ canvas.addEventListener("click", (ev) => {
 });
 function isCorrectPositionToMoveTo(e, playerPoints, mx, my, { x, y }) {
     let isMove = false;
-    console.log(`Moved to X-${x} and Y-${y}`);
-    console.log(`Picked up X-${mx} and Y-${my}`);
+    // console.log(`Moved to X-${x} and Y-${y}`)
+    // console.log(`Picked up X-${mx} and Y-${my}`)
     if ((mx === 20 && my === 20) && e.some((item) => (item.x === x && item.y === y) && ((x === 20 && y === 160) || (x === 160 && y === 160) || (x === 160 && y === 20)))) {
         isMove = true;
     }
@@ -162,6 +171,9 @@ function isCorrectPositionToMoveTo(e, playerPoints, mx, my, { x, y }) {
         isMove = true;
     }
     else if ((mx === 300 && my === 300) && e.some((item) => (item.x === x && item.y === y) && ((x === 160 && y === 300) || (x === 160 && y === 160) || (x === 300 && y === 160)))) {
+        isMove = true;
+    }
+    else if ((mx === 160 && my === 160) && e.some(item => item.x === x && item.y === y)) {
         isMove = true;
     }
     if (isMove) {

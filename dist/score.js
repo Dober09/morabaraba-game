@@ -9,5 +9,17 @@ function isWinner(playerList) {
     else if (playerList[0].y === playerList[1].y && playerList[1].y === playerList[2].y) {
         return true;
     }
-    return false;
+    else if (playerList.some(point => point.x === 160 && point.y === 160) &&
+        playerList.some(point => point.x === 20 && point.y === 300) &&
+        playerList.some(point => point.x === 300 && point.y === 20)) {
+        return true;
+    }
+    else if (playerList.some(point => point.x === 160 && point.y === 160) &&
+        playerList.some(point => point.x === 20 && point.y === 20) &&
+        playerList.some(point => point.x === 300 && point.y === 300)) {
+        return true;
+    }
+    else {
+        return false;
+    }
 }
