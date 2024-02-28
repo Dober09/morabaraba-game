@@ -6,7 +6,7 @@ class Player {
         this.ctx = this.canvas.getContext("2d");
         this.x = 20;
         this.y = 20;
-        this.raduis = 20;
+        this.raduis = 15;
         this.x = x;
         this.y = y;
         this.color = color;
@@ -55,6 +55,11 @@ function playersTurn(points, { x, y }, { mx, my }, playerOne, playerList, color)
         });
         new Player(x, y, color);
         playerList.push({ x, y });
+        if (isThreeItemsInList(playerList)) {
+            if (isWinner(playerList)) {
+                turnsPlayed % 2 == 0 ? console.log(`You win player 1`) : console.log(`You win player 2`);
+            }
+        }
         // decrease list
         isPlayerOneTurn = playerOne;
         turnsPlayed += 1;
@@ -63,11 +68,13 @@ function playersTurn(points, { x, y }, { mx, my }, playerOne, playerList, color)
         console.log("Invalid Posion has to be closer to the point");
     }
 }
-function playTurnTwo(playerPoints, { mx, my }) {
+function playTurnTwo(playerPoints, e, { mx, my }) {
     if (detectPosostionClicked(playerPoints, mx, my, boundry)) {
         playerPoints.filter((point, idx) => {
             if ((point.x + boundry > mx && point.x - boundry < mx) && (point.y + boundry > my && point.y - boundry < my)) {
+                // if(e.some(item=>item.x))
                 new Player(point.x, point.y, "").cleartShape();
+                console.log(`X ${point.x} Y ${point.y}`);
                 oldValue = playerPoints.splice(idx, 1)[0];
                 new Drawboard(canvas, grid);
             }
@@ -97,7 +104,7 @@ let playerOnePoints = [];
 let playerTwoPoints = [];
 let isPickedUp = true;
 let oldValue;
-const boundry = 20;
+const boundry = 15;
 canvas.addEventListener("click", (ev) => {
     let mx = ev.offsetX;
     let my = ev.offsetY;
@@ -114,12 +121,11 @@ canvas.addEventListener("click", (ev) => {
         if (isPlayerOneTurn) {
             // first select a peice to remove on the board
             console.log("Player One List");
-            console.log(playerOnePoints);
             if (isPickedUp) {
-                playTurnTwo(playerOnePoints, { mx, my });
+                playTurnTwo(playerOnePoints, points, { mx, my });
             }
             else {
-                console.log(oldValue);
+                // console.log(oldValue)
                 isPlayerOneTurn = playerTurnThree(points, playerOnePoints, { mx, my }, true, "rgb(255,0,0,0.5)");
                 if (!isPlayerOneTurn) {
                     isPickedUp = true;
@@ -130,11 +136,10 @@ canvas.addEventListener("click", (ev) => {
             // console.log(playerTwoPoints)
             if (isPickedUp) {
                 console.log("Player Two List");
-                console.log(playerOnePoints);
-                playTurnTwo(playerTwoPoints, { mx, my });
+                playTurnTwo(playerTwoPoints, points, { mx, my });
             }
             else {
-                console.log(oldValue);
+                // console.log(oldValue)
                 isPlayerOneTurn = playerTurnThree(points, playerTwoPoints, { mx, my }, false, "rgb(0,0,255,0.5)");
                 if (isPlayerOneTurn) {
                     isPickedUp = true;
@@ -147,8 +152,8 @@ canvas.addEventListener("click", (ev) => {
 });
 function isCorrectPositionToMoveTo(e, playerPoints, mx, my, { x, y }) {
     let isMove = false;
-    // console.log(`Moved to X-${x} and Y-${y}`)
-    // console.log(`Picked up X-${mx} and Y-${my}`)
+    console.log(`Moved to X-${x} and Y-${y}`);
+    console.log(`Picked up X-${mx} and Y-${my}`);
     if ((mx === 20 && my === 20) && e.some((item) => (item.x === x && item.y === y) && ((x === 20 && y === 160) || (x === 160 && y === 160) || (x === 160 && y === 20)))) {
         isMove = true;
     }
