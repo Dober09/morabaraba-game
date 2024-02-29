@@ -37,7 +37,6 @@ h3{
 
 
 .isWinner p{
-    color: rgba(255, 0, 0, 0.5);
     margin-block-start:120px ;
     font-weight: bolder;
 }
@@ -45,6 +44,7 @@ h3{
 .one{
     color: rgba(255, 0, 0, 0.5);
 }
+
 .two{
     color: rgba(0, 0, 255, 0.5);
 }

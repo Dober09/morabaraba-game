@@ -29,7 +29,7 @@ function detectPosostionClicked (points:list[],mx:number,my:number ,boundry:numb
 }
 
 
-function playersTurn(points:list[],{x,y}:any,{mx,my}:any,playerOne:boolean,playerList:list[],color:string):void{
+function playersTurn(points:list[],{x,y}:any,{mx,my}:any,playerOne:boolean,playerList:list[],color:string,number:string):void{
     if (detectPosostionClicked(points,mx,my,boundry)){
         points.map((point,idx)=>{
             if((point.x+boundry > mx && point.x-boundry < mx) && (point.y+boundry > my && point.y-boundry < my)) {
@@ -44,7 +44,7 @@ function playersTurn(points:list[],{x,y}:any,{mx,my}:any,playerOne:boolean,playe
         playerList.push({x,y})
     
         if(isThreeItemsInList(playerList) && isWinner(playerList)){
-            displayWinner(true)
+            displayWinner(true,number)
         }
        
         turnsPlayed%2==1? playerTurns("1"):playerTurns("2")
@@ -57,7 +57,26 @@ function playersTurn(points:list[],{x,y}:any,{mx,my}:any,playerOne:boolean,playe
     }
 }
 
+// const  points:list[]= [
+//     {x:20,y:20},
+//     {x:20,y:160},
+//     {x:20,y:300},
+//     {x:160,y:20},
+//     {x:160,y:160},
+//     {x:160,y:300},
+//     {x:300,y:20},
+//     {x:300,y:160},
+//     {x:300,y:300},
+// ]
 
+
+function hasToMove(e:list[],x:any,y:any){
+
+    if((x=== 20 && y===20)&&isCorrectPositionToMoveTo(e,x,y,points[1]) && isCorrectPositionToMoveTo(e,x=20,y=20,points[3])){
+        return true
+    }
+    // return true
+}
 
 function playTurnTwo(playerPoints:list[],e:list[],{mx,my}:any){
     
@@ -65,13 +84,16 @@ function playTurnTwo(playerPoints:list[],e:list[],{mx,my}:any){
             
         playerPoints.filter((point,idx)=>{
             if((point.x+boundry > mx && point.x-boundry < mx) && (point.y+boundry > my && point.y-boundry < my)) {
+              
+                   
+
+                        new Player(point.x,point.y,"").cleartShape()
+                        
+                        oldValue =playerPoints.splice(idx,1)[0] 
+                        new Drawboard(canvas,grid)
                     
-                // if(e.some(item=>item.x))
-                new Player(point.x,point.y,"").cleartShape()
-                console.log(`X ${point.x} Y ${point.y}`)
-                oldValue =playerPoints.splice(idx,1)[0] 
-                new Drawboard(canvas,grid)
-            
+
+                 
             }
         })
         
@@ -85,15 +107,20 @@ function playTurnTwo(playerPoints:list[],e:list[],{mx,my}:any){
 }
 
 
-function playerTurnThree(points:list[],playerList:list[],{mx,my}:any,isPlayerOneTurn:boolean,color:string){
+function playerTurnThree(points:list[],playerList:list[],{mx,my}:any,isPlayerOneTurn:boolean,color:string,number:string){
     let isPlayerOne = isPlayerOneTurn
     points.filter((point,idx)=>{
         if((point.x+boundry > mx && point.x-boundry < mx) && (point.y+boundry > my && point.y-boundry < my)) {
-            if( isCorrectPositionToMoveTo(points,playerList,oldValue.x,oldValue.y,point)) {
+            if( isCorrectPositionToMoveTo(points,oldValue.x,oldValue.y,point)) {
+                // push values in the orderd list
+                points.push({x:oldValue.x,y:oldValue.y})
+                playerList.push(point)
+                // create the circle
                     new Player(point.x,point.y,color) 
+                    // remove that coordinate from that list
                     points.splice(idx,1)
                     if(isThreeItemsInList(playerList) && isWinner(playerList)){
-                        displayWinner(true)
+                        displayWinner(true,number)
                     }
                     
                     isPlayerOne =!isPlayerOneTurn
@@ -109,13 +136,10 @@ function playerTurnThree(points:list[],playerList:list[],{mx,my}:any,isPlayerOne
 
 
 
-function isCorrectPositionToMoveTo(e:list[],playerPoints:list[],mx:any,my:any,{x,y}:any):boolean{
+function isCorrectPositionToMoveTo(e:list[],mx:any,my:any,{x,y}:any):boolean{
 
     let isMove:boolean = false 
-    console.log('player')
-    console.log(playerPoints)
-    console.log("space")
-    console.log(e)
+   
     console.log(`Moved to X-${x} and Y-${y}`)
     console.log(`Picked up X-${mx} and Y-${my}`)
    
@@ -149,10 +173,10 @@ function isCorrectPositionToMoveTo(e:list[],playerPoints:list[],mx:any,my:any,{x
         isMove = true
     }
 
-    if(isMove){
-        e.push({x:mx,y:my})
-        playerPoints.push({x,y})
-    }
+    // if(isMove){
+    //     e.push({x:mx,y:my})
+    //     playerPoints.push({x,y})
+    // }
 
       return  isMove
 

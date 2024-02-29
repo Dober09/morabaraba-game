@@ -46,30 +46,21 @@ canvas.addEventListener("click", (ev) => {
     let x, y;
     if (turnsPlayed < 6) {
         if (isPlayerOneTurn) {
-            console.log("Player One turn");
-            playersTurn(points, { x, y }, { mx, my }, false, playerOnePoints, "rgb(255,0,0,0.5)");
+            playersTurn(points, { x, y }, { mx, my }, false, playerOnePoints, "rgb(255,0,0,0.5)", "one");
         }
         else {
-            console.log("Player Two turn");
-            playersTurn(points, { x, y }, { mx, my }, true, playerTwoPoints, "rgb(0,0,255,0.5)");
+            playersTurn(points, { x, y }, { mx, my }, true, playerTwoPoints, "rgb(0,0,255,0.5)", "two");
         }
     }
     else {
         if (isPlayerOneTurn) {
-            console.log("Player One turn");
-            console.log(points);
-            // console.log(playerOnePoints)
-            console.log(isPickedUp);
             playerTurns("1");
             // first select a peice to remove on the board
             if (isPickedUp) {
                 playTurnTwo(playerOnePoints, points, { mx, my });
             }
             else {
-                console.log(points);
-                // console.log(playerOnePoints)
-                console.log(isPickedUp);
-                isPlayerOneTurn = playerTurnThree(points, playerOnePoints, { mx, my }, true, "rgb(255,0,0,0.5)");
+                isPlayerOneTurn = playerTurnThree(points, playerOnePoints, { mx, my }, true, "rgb(255,0,0,0.5)", "one");
                 if (!isPlayerOneTurn) {
                     isPickedUp = true;
                     playerTurns("2");
@@ -82,7 +73,7 @@ canvas.addEventListener("click", (ev) => {
             }
             else {
                 // console.log(oldValue)
-                isPlayerOneTurn = playerTurnThree(points, playerTwoPoints, { mx, my }, false, "rgb(0,0,255,0.5)");
+                isPlayerOneTurn = playerTurnThree(points, playerTwoPoints, { mx, my }, false, "rgb(0,0,255,0.5)", "two");
                 if (isPlayerOneTurn) {
                     isPickedUp = true;
                     playerTurns("1");

@@ -1,4 +1,8 @@
 const notLose = document.querySelector(".isWinner") as HTMLDivElement
+const p = document.querySelector("#para") as HTMLParagraphElement
+const btn = document.querySelector(".btn") as HTMLButtonElement
+
+
 
 
 function isThreeItemsInList(playerList:list[]){
@@ -28,10 +32,29 @@ function isWinner(playerList:list[]):boolean{
 
 }
 
-function displayWinner(isWin:boolean){
+function displayWinner(isWin:boolean,number:string){
     if(isWin){
         notLose.style.display = "block"
+        if(number == "one"){
+            p.innerHTML = "Player One Won"
+            p.classList.add("one")
+            btn.classList.add("one")
+            p.classList.remove("two")
+            btn.classList.remove("two")
+        }else{
+
+            p.innerHTML = "Player Two Won"
+            p.classList.add("two")
+            btn.classList.add("two")
+            p.classList.remove("one")
+            btn.classList.remove("one")
+        }
     }
 
 }
 
+
+btn.addEventListener("click",(e)=>{
+    location.reload()
+    notLose.style.display = "none"
+})

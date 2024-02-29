@@ -1,5 +1,7 @@
 "use strict";
 const notLose = document.querySelector(".isWinner");
+const p = document.querySelector("#para");
+const btn = document.querySelector(".btn");
 function isThreeItemsInList(playerList) {
     return playerList.length === 3 ? true : false;
 }
@@ -24,8 +26,26 @@ function isWinner(playerList) {
         return false;
     }
 }
-function displayWinner(isWin) {
+function displayWinner(isWin, number) {
     if (isWin) {
         notLose.style.display = "block";
+        if (number == "one") {
+            p.innerHTML = "Player One Won";
+            p.classList.add("one");
+            btn.classList.add("one");
+            p.classList.remove("two");
+            btn.classList.remove("two");
+        }
+        else {
+            p.innerHTML = "Player Two Won";
+            p.classList.add("two");
+            btn.classList.add("two");
+            p.classList.remove("one");
+            btn.classList.remove("one");
+        }
     }
 }
+btn.addEventListener("click", (e) => {
+    location.reload();
+    notLose.style.display = "none";
+});
