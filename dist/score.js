@@ -1,4 +1,5 @@
 "use strict";
+const notLose = document.querySelector(".isWinner");
 function isThreeItemsInList(playerList) {
     return playerList.length === 3 ? true : false;
 }
@@ -21,5 +22,10 @@ function isWinner(playerList) {
     }
     else {
         return false;
+    }
+}
+function displayWinner(isWin) {
+    if (isWin) {
+        notLose.style.display = "block";
     }
 }

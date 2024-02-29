@@ -42,10 +42,10 @@ h3{
     font-weight: bolder;
 }
 
-.isWinner p.one{
+.one{
     color: rgba(255, 0, 0, 0.5);
 }
-.isWinner p.two{
+.two{
     color: rgba(0, 0, 255, 0.5);
 }
 
@@ -81,3 +81,6 @@ main div p{
     line-height: 1.5;
 }
 
+.playerTurn{
+    margin-top:10px;
+}

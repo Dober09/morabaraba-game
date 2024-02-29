@@ -1,5 +1,8 @@
-function isThreeItemsInList(playerList:list[]):boolean{
-    return playerList.length === 3 ? true : false
+const notLose = document.querySelector(".isWinner") as HTMLDivElement
+
+
+function isThreeItemsInList(playerList:list[]){
+    return playerList.length === 3 ? true: false
 }
 
 
@@ -24,3 +27,11 @@ function isWinner(playerList:list[]):boolean{
     }
 
 }
+
+function displayWinner(isWin:boolean){
+    if(isWin){
+        notLose.style.display = "block"
+    }
+
+}
+
