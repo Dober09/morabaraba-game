@@ -22,17 +22,6 @@ class Player {
         this.ctx.clearRect(this.x - this.raduis, this.y - this.raduis, 40, 40);
     }
 }
-const points = [
-    { x: 20, y: 20 },
-    { x: 20, y: 160 },
-    { x: 20, y: 300 },
-    { x: 160, y: 20 },
-    { x: 160, y: 160 },
-    { x: 160, y: 300 },
-    { x: 300, y: 20 },
-    { x: 300, y: 160 },
-    { x: 300, y: 300 },
-];
 let isPlayerOneTurn = true;
 let turnsPlayed = 0;
 let playerOnePoints = [];
