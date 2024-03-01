@@ -45,7 +45,7 @@ let playerTwoPoints : list[] = []
 let isPickedUp:boolean = true
 let oldValue:list
 
-const boundry = 15
+const boundry = 30
 
 canvas.addEventListener("click",(ev):void=>{
     let mx = ev.offsetX;

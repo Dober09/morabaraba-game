@@ -28,7 +28,7 @@ let playerOnePoints = [];
 let playerTwoPoints = [];
 let isPickedUp = true;
 let oldValue;
-const boundry = 15;
+const boundry = 30;
 canvas.addEventListener("click", (ev) => {
     let mx = ev.offsetX;
     let my = ev.offsetY;
