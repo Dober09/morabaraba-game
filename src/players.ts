@@ -47,6 +47,7 @@ let oldValue:list
 
 const boundry = 30
 
+
 canvas.addEventListener("click",(ev):void=>{
     let mx = ev.offsetX;
     let my = ev.offsetY;
@@ -64,10 +65,6 @@ canvas.addEventListener("click",(ev):void=>{
         
         
         if (isPlayerOneTurn){
-            
-           
-            
-            
             playerTurns("1")
             
             // first select a peice to remove on the board

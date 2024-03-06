@@ -2,6 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <link rel="icon" type="image/svg+xml" href="./game.png">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Morabaraba</title>
     <link rel="stylesheet" href="./src/css/style.css">
@@ -11,16 +12,19 @@
   <main>
     <h1>Morabaraba Game</h1>
     <h3>How to play:</h3>
-    <p>Place your three game pieces in row,column or diagonal in order to win</p>
+    <p>The players take turns marking spaces on the grid with chips</p>
+    <p>The player who succeeds in placing three of their chips in a horizontal,vertical or diagonal row wins the game</p>
+    <p>If all the chips are placed on the grid without on player being the winner</p>
+    <p>Then you have to move the chips to win the game</p>
     <h3>Game rules :</h3>
-    <p>Touch is a move if your peice hase place it can move to</p>
+    <p>Touch is a move</p>
     <div style="background-color: rgba(255, 0, 0, 0.5); height: 20px;" ><p>Player 1 is red</p> </div>
     <div style="background-color: rgba(0, 0, 255, 0.5);  height: 20px;"><p>Player 2 is blue</p></div>
-    
   </main>
   <div class="playerTurn">
     <p class="one">Player <span id="playerTurn">1</span> turn</p>
   </div>
+  <span class="Error"></span>
   <div class="isWinner">
     <p id="para">Player one Won</p>
     <button class="btn">play again</button>

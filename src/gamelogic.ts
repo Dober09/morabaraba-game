@@ -12,7 +12,7 @@ const  points:list[]= [
 
 const playerTurnOneTwo:any = document.querySelector("#playerTurn") as HTMLSpanElement
 
-
+const error = document.querySelector(".Error") as HTMLSpanElement
 
 function playerTurns(playerTurn:string){
     if (playerTurn === "1"){
@@ -75,6 +75,7 @@ function playersTurn(arrayList:list[],{x,y}:any,{mx,my}:any,playerOne:boolean,pl
 
 function playTurnTwo(playerPoints:list[],e:list[],{mx,my}:any){
     let isblock 
+    error.style.color = "red"
     if (detectPosostionClicked(playerPoints,mx,my,boundry)){
             
         playerPoints.filter((point,idx)=>{
@@ -85,20 +86,27 @@ function playTurnTwo(playerPoints:list[],e:list[],{mx,my}:any){
                             new Player(point.x,point.y,"").cleartShape()
                             oldValue =playerPoints.splice(idx,1)[0] 
                             new Drawboard(canvas,grid)
+                            error.innerHTML = ""
+                           
+                        }else{
+                            console.log("cannot move that chip")
+
+                            error.innerHTML = "Cannot move that chip is blockes"
                         }
                     
 
                  
             }
         })
-        
         if (!isblock){
-
+            
             isPickedUp =false
-        }  
+        } 
+        
         
     }else{
         console.log("cannot pick up peice that is not yours")
+        error.innerHTML = "Cannot move that chip its not yours"
         
     }
 }

@@ -11,6 +11,7 @@ const points = [
     { x: 300, y: 300 },
 ];
 const playerTurnOneTwo = document.querySelector("#playerTurn");
+const error = document.querySelector(".Error");
 function playerTurns(playerTurn) {
     var _a, _b, _c, _d;
     if (playerTurn === "1") {
@@ -60,6 +61,7 @@ function playersTurn(arrayList, { x, y }, { mx, my }, playerOne, playerList, col
 }
 function playTurnTwo(playerPoints, e, { mx, my }) {
     let isblock;
+    error.style.color = "red";
     if (detectPosostionClicked(playerPoints, mx, my, boundry)) {
         playerPoints.filter((point, idx) => {
             if ((point.x + boundry > mx && point.x - boundry < mx) && (point.y + boundry > my && point.y - boundry < my)) {
@@ -68,6 +70,11 @@ function playTurnTwo(playerPoints, e, { mx, my }) {
                     new Player(point.x, point.y, "").cleartShape();
                     oldValue = playerPoints.splice(idx, 1)[0];
                     new Drawboard(canvas, grid);
+                    error.innerHTML = "";
+                }
+                else {
+                    console.log("cannot move that chip");
+                    error.innerHTML = "Cannot move that chip is blockes";
                 }
             }
         });
@@ -77,6 +84,7 @@ function playTurnTwo(playerPoints, e, { mx, my }) {
     }
     else {
         console.log("cannot pick up peice that is not yours");
+        error.innerHTML = "Cannot move that chip its not yours";
     }
 }
 function playerTurnThree(points, playerList, { mx, my }, isPlayerOneTurn, color, number) {
